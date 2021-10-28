@@ -43,6 +43,7 @@ class _UnlockPageState extends State<UnlockPage> {
   List<Widget> cards = [];
   List<bool> choices = [];
   List<int> choices_seq = [];
+  SwipeDirection currentDir = SwipeDirection.None;
 
   @override
   initState() {
@@ -150,6 +151,37 @@ class _UnlockPageState extends State<UnlockPage> {
     return widgets;
   }
 
+  Widget showAlignment() {
+      switch(currentDir) {
+        case SwipeDirection.TopLeft:
+          return Icon(
+              Icons.add_circle,
+              size: 25,
+              color: Colors.red,
+          );
+        case SwipeDirection.TopRight:
+          return Icon(
+            Icons.remove_circle,
+            size: 25,
+            color: Colors.red,
+          );
+        case SwipeDirection.BotLeft:
+          return Icon(
+            Icons.add_circle,
+            size: 25,
+            color: Colors.blue,
+          );
+        case SwipeDirection.BotRight:
+          return Icon(
+            Icons.remove_circle,
+            size: 25,
+            color: Colors.blue,
+          );
+        case SwipeDirection.None:
+          return SizedBox(height:25);
+      }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -158,12 +190,36 @@ class _UnlockPageState extends State<UnlockPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              showAlignment(),
+              SizedBox(height:350),
               cards.isNotEmpty
                   ? TCard(
                       cards: cards,
                       controller: _controller,
+                      onDrag: (alignment) {
+                        SwipeDirection dir = SwipeDirection.None;
+
+                        if (alignment.x > 0) {
+                          if (alignment.y > 0) {
+                            dir = SwipeDirection.BotRight;
+                          } else if (alignment.y < 0) {
+                            dir = SwipeDirection.TopRight;
+                          }
+                        } else if (alignment.x < 0) {
+                          if (alignment.y > 0) {
+                            dir = SwipeDirection.BotLeft;
+                          } else if (alignment.y < 0) {
+                            dir = SwipeDirection.TopLeft;
+                          }
+                        }
+
+                        setState(() {
+                          currentDir = dir;
+                        });
+                      },
                       onForward: (index, info) {
                         _index = index;
+                        currentDir = SwipeDirection.None;
 
                         print(info.direction);
                         print(_index);

@@ -77,14 +77,14 @@ class _MyHomePageState extends State<MyHomePage> {
           children: <Widget>[
             const Text(
               'Your daily average pickups is 80 times',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 20),
             ),
             const SizedBox(
               height: 100,
             ),
             const Text(
               'Please select language pair',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 20),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -133,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             const Text(
               'Please enter your color sequence',
-              style: TextStyle(fontSize: 25),
+              style: TextStyle(fontSize: 20),
             ),
             const SizedBox(
               height: 50,

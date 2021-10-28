@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -9,6 +10,7 @@ import 'swipe_info.dart';
 typedef ForwardCallback(int index, SwipeInfo info);
 typedef BackCallback(int index, SwipeInfo info);
 typedef EndCallback();
+typedef DragCallback(Alignment alignment);
 
 /// 卡片列表
 class TCard extends StatefulWidget {
@@ -26,6 +28,8 @@ class TCard extends StatefulWidget {
 
   /// 结束回调方法
   final EndCallback? onEnd;
+
+  final DragCallback? onDrag;
 
   /// 卡片控制器
   final TCardController? controller;
@@ -45,6 +49,7 @@ class TCard extends StatefulWidget {
     this.onForward,
     this.onBack,
     this.onEnd,
+    this.onDrag,
     this.lockYAxis = false,
     this.slideSpeed = 20,
     this.delaySlideFor = 500,
@@ -301,6 +306,10 @@ class TCardState extends State<TCard> with TickerProviderStateMixin {
     }
   }
 
+  void dragCallback() {
+    widget.onDrag!(_frontCardAlignment);
+  }
+
   // 重置最前面卡片的位置
   void _resetFrontCard() {
     _frontCardRotation = 0.0;
@@ -430,6 +439,10 @@ class TCardState extends State<TCard> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  Widget updateAnswerIndicator() {
+    return Text(_frontCardAlignment.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox.fromSize(
@@ -450,12 +463,15 @@ class TCardState extends State<TCard> with TickerProviderStateMixin {
                       child: GestureDetector(
                         onPanDown: (DragDownDetails details) {
                           _stop();
+                          dragCallback();
                         },
                         onPanUpdate: (DragUpdateDetails details) {
                           _updateFrontCardAlignment(details, size);
+                          dragCallback();
                         },
                         onPanEnd: (DragEndDetails details) {
                           _judgeRunAnimation(details, size);
+                          dragCallback();
                         },
                       ),
                     )
@@ -467,3 +483,5 @@ class TCardState extends State<TCard> with TickerProviderStateMixin {
     );
   }
 }
+
+
